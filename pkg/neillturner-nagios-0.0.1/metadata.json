@@ -1,0 +1,33 @@
+{
+  "name": "neillturner-nagios",
+  "license": "Apache License, Version 2.0",
+  "version": "0.0.1",
+  "dependencies": [
+
+  ],
+  "summary": "Install Nagios",
+  "author": "neillturner",
+  "source": "git://github.com/neillturner/nagios.git",
+  "checksums": {
+    "manifests/server.pp": "3bd0920c250c61918cb18d98f9b8faa5",
+    "manifests/resource.pp": "5c5801356bb27caa5c6b5e855e0f9138",
+    "files/services.cfg": "dbbe9d2399358c15e7ca7a54e6c8f561",
+    "manifests/export.pp": "6239e8e58f4a1c62c84fb90949904fae",
+    "manifests/params.pp": "052c7846b08adeb2f37c6b96492f8c35",
+    "manifests/init.pp": "39ace13825b2407dbd7a1948e4fa9983",
+    "README": "06d77cb89d79cc76b015569d93c51261",
+    "manifests/resource/file.pp": "86bab673fde2d15eacad60e951544af7",
+    "manifests/resource/host.pp": "eea2ab3f554441345baeb5fd5f3added",
+    "files/more_commands.cfg": "c48a930d3aa0728f98a2604507fd6880",
+    "Modulefile": "18b38beeabf0522232fc040fe7d2a7e2",
+    "files/hostgroups.cfg": "eb0a49f1e9bbc47d0797b81c4bab1f52",
+    "manifests/resource/hostgroup.pp": "abdc7cbcd0e18b29f4ef0d0fcbbb3271",
+    "files/nagios.cfg": "bf0e83b0884bb74d5879eafb441dceaa",
+    "files/nrpe.cfg": "888f735ca80313b4f9f54b854176adf4"
+  },
+  "description": "Install and configure nagios to work with puppetmaster with stored configs",
+  "project_page": "http://forge.puppetlabs.com/neillturner/nagios",
+  "types": [
+
+  ]
+}

@@ -1,0 +1,83 @@
+Overview
+========
+
+The creates nagios server and clients that will interact with a puppetmaster be added automatically to the nagios server. 
+You must have a puppetmaster installed with stored configs setup. 
+It uses the puppet nagios export commands. 
+This works on Centos 64 bit. With need changes for other platforms. 
+
+
+To define a server: 
+   class { 'nagios': }
+	class { 'nagios::server': 
+	    require => Class['nagios']
+	} 
+	
+On a client: 
+   1. Use a nrpe module like pdxcat-nrpe, http://forge.puppetlabs.com/pdxcat/nrpe, to install nrpe on all clients including the nagios server 
+    
+   class { 'nrpe':
+    allowed_hosts => ['127.0.0.1', 'monitor.pibenchmark.com'],
+	require => Class['ntp']
+  }
+ 
+  2. Change the nrpe.cfg to have the required commands installed (probably a cleaner way to do this)
+  a. edit the file nrpe.cfg and change 
+   allowed_hosts=127.0.0.1
+  to 
+   #allowed_hosts=127.0.0.1
+   allowed_hosts=127.0.0.1,99.99.99.99  
+  where 99.99.99.99is the nagios ip address 
+  
+  b. replace the nrpe.cfg with this new file  
+  
+  exec { 'save old nrpe.cfg':
+     command     => "cp -f nrpe.cfg nrpe.cfg.old",
+     cwd         => "/etc/nagios",
+     require    =>  Class['nrpe'] 
+   }  
+ 
+ # npre config file
+  file {'new nrpe.cfg':
+    ensure    => present,
+	path      => '/etc/nagios/nrpe.cfg.new',
+    source    => 'puppet:///modules/nagios/nrpe.cfg',
+	require   =>  Exec['save old nrpe.cfg'] 
+  }
+  
+  exec { 'move nrpe.cfg':
+     command     => "mv -f nrpe.cfg.new nrpe.cfg",
+     cwd         => "/etc/nagios",
+     require    =>  File['new nrpe.cfg'] 
+   }  
+   c. restart the nrpe service
+    exec { 'restart the nrpe service':
+     command     => "service nrpe restart",
+     cwd         => "/tmp",
+     require    =>   Exec['move nrpe.cfg']
+   }    
+   
+ 
+ 3. Export the client host to puppet so it will be added automatically to the nagios server. 
+   class { 'nagios::export' :
+     require => Exec['restart the nrpe service']
+   } 
+ 
+Once this is working add additional checks for services etc. 
+
+
+Based on 
+
+    http://www.allgoodbits.org/articles/view/31
+    http://www.allgoodbits.org/articles/view/32
+	
+
+DEBUGGING
+
+To debug nagios config file errors run  
+   nagios -v /etc/nagios/nagios.cfg
+   
+To test that the nrpe is running commands run on the nagios server    
+   /usr/lib64/nagios/plugins/check_nrpe -H client.example.com -c check_load  
+where client.example.com  is the client hostname 
+   
